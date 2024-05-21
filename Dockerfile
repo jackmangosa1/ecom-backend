@@ -9,7 +9,7 @@
 # ENTRYPOINT ["java", "-jar", "Shopy.jar"]
 
 
-FROM maven:3.8.2-jdk-18 AS build
+FROM maven:3.8.6-openjdk-18 AS build
 COPY . .
 RUN mvn clean package -DskipTests
 
