@@ -1,7 +1,7 @@
 FROM maven:3.8.6-openjdk-18 AS build
 COPY . /app
 
-WORKDIR /app/Shopy/Shopy
+WORKDIR /app/
 
 RUN mvn clean package -DskipTests
 
