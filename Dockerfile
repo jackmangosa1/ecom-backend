@@ -2,7 +2,7 @@ FROM maven:3.8.6-openjdk-18 AS build
 COPY pom.xml /app/  # Copy pom.xml first
 COPY . /app
 
-WORKDIR /app
+WORKDIR /app/Shopy/Shopy
 
 RUN mvn clean package -DskipTests
 
