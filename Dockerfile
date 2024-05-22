@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Copy the pom.xml file and the src directory to the working directory in Docker
 COPY pom.xml .
-COPY src ./src
+
 
 # Run the Maven build
 RUN mvn clean package -DskipTests
