@@ -3,9 +3,8 @@ FROM maven:3.8.6-openjdk-18 AS build
 # Set the working directory inside the Docker container
 WORKDIR /app
 
-# Copy the pom.xml file and the src directory to the working directory in Docker
-COPY pom.xml .
-
+# Copy the entire project directory into the working directory
+COPY . /app
 
 # Run the Maven build
 RUN mvn clean package -DskipTests
