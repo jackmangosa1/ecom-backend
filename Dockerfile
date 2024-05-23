@@ -18,4 +18,4 @@ COPY --from=build /app/target/Shopy-0.0.1-SNAPSHOT.jar Shopy.jar
 EXPOSE 8080
 
 # Run the jar file
-ENTRYPOINT ["java", "-jar", "Shopy.jar"]
+ENTRYPOINT ["java", "-Dserver.port=$PORT", "-jar", "Shopy.jar"]
