@@ -87,6 +87,7 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <mainClass>com.auca.Shopy.ShopyApplication</mainClass> <!-- Replace with your main class -->
                 </configuration>
             </plugin>
         </plugins>
