@@ -12,30 +12,35 @@ import com.auca.Shopy.utils.JwtUtil;
 import jakarta.annotation.PostConstruct;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
 @Service
-public class AuthServiceImpl implements  AuthService{
+public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final OrderRepository orderRepository;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private  JwtUtil jwtUtil;
     public final String TOKEN_PREFIX = "Bearer ";
     public final String HEADER_STRING = "Authorization";
 
+    @Autowired
+    public AuthServiceImpl(UserRepository userRepository,
+                           BCryptPasswordEncoder bCryptPasswordEncoder,
+                           OrderRepository orderRepository,
+                           JwtUtil jwtUtil) {
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.orderRepository = orderRepository;
+        this.jwtUtil = jwtUtil;
+    }
 
     public ResponseEntity<?> authenticate(String username, String password) throws JSONException {
         Optional<User> optionalUser = userRepository.findFirstByUsername(username);
@@ -43,7 +48,7 @@ public class AuthServiceImpl implements  AuthService{
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
-                final String jwt = jwtUtil.generateToken( user.getUsername(), user.getId(), user.getRole().toString());
+                final String jwt = jwtUtil.generateToken(user.getUsername(), user.getId(), user.getRole().toString());
                 return ResponseEntity.ok()
                         .header(HEADER_STRING, TOKEN_PREFIX + jwt)
                         .body(new JSONObject()
@@ -59,14 +64,13 @@ public class AuthServiceImpl implements  AuthService{
         }
     }
 
-
-    public UserDTO createUser(SignupRequestDTO signupRequest){
+    public UserDTO createUser(SignupRequestDTO signupRequest) {
         User user = new User();
 
         user.setEmail(signupRequest.getEmail());
         user.setName(signupRequest.getName());
         user.setUsername(signupRequest.getUsername());
-        user.setPassword(new BCryptPasswordEncoder().encode(signupRequest.getPassword()));
+        user.setPassword(bCryptPasswordEncoder.encode(signupRequest.getPassword()));
         user.setRole(UserRole.USER);
         User createdUser = userRepository.save(user);
 
@@ -81,26 +85,24 @@ public class AuthServiceImpl implements  AuthService{
         return userDto;
     }
 
-    public Boolean hasUserWithEmail(String email){
+    public Boolean hasUserWithEmail(String email) {
         return userRepository.findFirstByEmail(email).isPresent();
-
     }
 
-    public Boolean hasUserWithUsername(String username){
+    public Boolean hasUserWithUsername(String username) {
         return userRepository.findFirstByUsername(username).isPresent();
-
     }
 
     @PostConstruct
-    public  void createAdminAccount(){
+    public void createAdminAccount() {
         User adminAccount = userRepository.findByRole(UserRole.ADMIN);
-        if(null == adminAccount){
+        if (adminAccount == null) {
             User user = new User();
             user.setEmail("admin@test.com");
             user.setUsername("admin");
             user.setName("admin");
             user.setRole(UserRole.ADMIN);
-            user.setPassword(new BCryptPasswordEncoder().encode("test123"));
+            user.setPassword(bCryptPasswordEncoder.encode("test123"));
             userRepository.save(user);
         }
     }
