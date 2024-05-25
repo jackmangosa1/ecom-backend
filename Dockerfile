@@ -57,4 +57,4 @@ WORKDIR /app
 EXPOSE 8080
 
 # Set the entry point to run the JAR file
-ENTRYPOINT ["java", "-jar", "Shopy/target/Shopy-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "target/Shopy-0.0.1-SNAPSHOT.jar"]
