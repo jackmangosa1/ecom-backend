@@ -21,8 +21,7 @@
 # # ENTRYPOINT ["java", "-Dserver.port=$PORT", "-jar", "/app.jar"]
 # ENTRYPOINT ["java", "-Xmx512m", "-jar", "/app.jar"]
 
-# Use the Azul Zulu OpenJDK 21.0.2 image as the base
-# Use an Azul Zulu OpenJDK 22 image
+# Use an Azul Zulu OpenJDK 22 image for the build stage
 FROM azul/zulu-openjdk-debian:22.0.0 AS build
 
 # Set the working directory inside the container
@@ -32,29 +31,29 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y maven
 
 # Copy the Maven project file
-COPY /Shopy/pom.xml .
+COPY Shopy/pom.xml .
 
 # Download and cache the dependencies
 RUN mvn dependency:go-offline -B
 
 # Copy the entire project
-COPY . .
+COPY Shopy .
 
 # Build the application
 RUN mvn package -DskipTests
 
-# Use the Azul Zulu OpenJDK 22 image for the runtime
+# Use the Azul Zulu OpenJDK 22 image for the runtime stage
 FROM azul/zulu-openjdk-debian:22.0.0
 
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy the jar file from the build stage
-# COPY --from=build /app/target/e-commerce-backend-0.0.1-SNAPSHOT.jar app.jar
-
+COPY --from=build /app/target/Shopy-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose the port your application runs on (replace 8080 if your app runs on a different port)
 EXPOSE 8080
 
 # Set the entry point to run the JAR file
-ENTRYPOINT ["java", "-jar", "target/Shopy-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
