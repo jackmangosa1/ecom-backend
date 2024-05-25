@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final OrderRepository orderRepository;
     private final JwtUtil jwtUtil;
-    
+
     public final String TOKEN_PREFIX = "Bearer ";
     public final String HEADER_STRING = "Authorization";
 
