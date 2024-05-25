@@ -32,7 +32,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y maven
 
 # Copy the Maven project file
-COPY pom.xml .
+COPY /Shopy/pom.xml .
 
 # Download and cache the dependencies
 RUN mvn dependency:go-offline -B
@@ -57,4 +57,4 @@ WORKDIR /app
 EXPOSE 8080
 
 # Set the entry point to run the JAR file
-ENTRYPOINT ["java", "-jar", "target/Shopy-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "Shopy/target/Shopy-0.0.1-SNAPSHOT.jar"]
