@@ -19,7 +19,7 @@ public class SimpleCorsFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
         String originHeader = request.getHeader("Origin");
-        if (originHeader != null && (originHeader.startsWith("http://localhost:3000") || originHeader.startsWith("https://your-frontend-domain.com"))) {
+        if (originHeader != null && (originHeader.startsWith("http://localhost:3000") || originHeader.startsWith("https://ecom-frontend-blush.vercel.app/"))) {
             response.setHeader("Access-Control-Allow-Origin", originHeader);
             response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
             response.setHeader("Access-Control-Max-Age", "3600");
