@@ -14,7 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,8 +24,7 @@ import java.util.Optional;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-//    @Autowired
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final OrderRepository orderRepository;
     private final JwtUtil jwtUtil;
 
@@ -34,11 +33,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     public AuthServiceImpl(UserRepository userRepository,
-                           BCryptPasswordEncoder bCryptPasswordEncoder,
+                           PasswordEncoder passwordEncoder, // Inject PasswordEncoder interface
                            OrderRepository orderRepository,
                            JwtUtil jwtUtil) {
         this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder; // Spring will inject the bean here
+        this.passwordEncoder = passwordEncoder; // Spring will inject the bean here
         this.orderRepository = orderRepository;
         this.jwtUtil = jwtUtil;
     }
@@ -48,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
+            if (passwordEncoder.matches(password, user.getPassword())) { // Use passwordEncoder
                 final String jwt = jwtUtil.generateToken(user.getUsername(), user.getId(), user.getRole().toString());
                 return ResponseEntity.ok()
                         .header(HEADER_STRING, TOKEN_PREFIX + jwt)
@@ -71,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(signupRequest.getEmail());
         user.setName(signupRequest.getName());
         user.setUsername(signupRequest.getUsername());
-        user.setPassword(bCryptPasswordEncoder.encode(signupRequest.getPassword()));
+        user.setPassword(passwordEncoder.encode(signupRequest.getPassword())); // Use passwordEncoder
         user.setRole(UserRole.USER);
         User createdUser = userRepository.save(user);
 
@@ -103,7 +102,7 @@ public class AuthServiceImpl implements AuthService {
             user.setUsername("admin");
             user.setName("admin");
             user.setRole(UserRole.ADMIN);
-            user.setPassword(bCryptPasswordEncoder.encode("test123"));
+            user.setPassword(passwordEncoder.encode("test123")); // Use passwordEncoder
             userRepository.save(user);
         }
     }
