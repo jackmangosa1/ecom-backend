@@ -24,7 +24,7 @@ import java.util.Optional;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-    @Autowired
+//    @Autowired
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final OrderRepository orderRepository;
     private final JwtUtil jwtUtil;
@@ -38,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
                            OrderRepository orderRepository,
                            JwtUtil jwtUtil) {
         this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder; // Spring will inject the bean here
         this.orderRepository = orderRepository;
         this.jwtUtil = jwtUtil;
     }
